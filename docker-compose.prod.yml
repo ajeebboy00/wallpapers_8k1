@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: w8k1_prod_postgres
+    restart: always
+    shm_size: 256mb
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-w8k1_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-w8k1_secure_password}
+      POSTGRES_DB: ${POSTGRES_DB:-wallpapers_8k1_db}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-w8k1_user} -d ${POSTGRES_DB:-wallpapers_8k1_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - w8k1_internal
+
+  redis:
+    image: redis:7-alpine
+    container_name: w8k1_prod_redis
+    restart: always
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "512mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redis_prod_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - w8k1_internal
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: w8k1_prod_backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-w8k1_user}:${POSTGRES_PASSWORD:-w8k1_secure_password}@postgres:5432/${POSTGRES_DB:-wallpapers_8k1_db}
+      - REDIS_URL=redis://redis:6379/0
+      - ENABLE_CACHE=true
+      - SECRET_KEY=${SECRET_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - STORAGE_PROVIDER=${STORAGE_PROVIDER:-local}
+      - STORAGE_LOCAL_DIR=/app/storage/uploads
+      - STORAGE_BASE_URL=${STORAGE_BASE_URL:-http://localhost/storage/uploads}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost,https://admin.wallpapers8k1.com}
+    volumes:
+      - backend_prod_uploads:/app/storage/uploads
+    networks:
+      - w8k1_internal
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/api/v1/health/live || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: w8k1_prod_admin
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - w8k1_internal
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost/healthz || exit 1"]
+      interval: 20s
+      timeout: 3s
+      retries: 3
+
+  gateway:
+    image: nginx:alpine
+    container_name: w8k1_prod_gateway
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/gateway.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - admin
+    networks:
+      - w8k1_internal
+      - w8k1_public
+
+networks:
+  w8k1_internal:
+    driver: bridge
+  w8k1_public:
+    driver: bridge
+
+volumes:
+  postgres_prod_data:
+    driver: local
+  redis_prod_data:
+    driver: local
+  backend_prod_uploads:
+    driver: local

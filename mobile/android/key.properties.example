@@ -1,0 +1,10 @@
+# =====================================================================
+# Google Play Store Release Keystore Signing Configuration
+# =====================================================================
+# Copy this file to `key.properties` and fill in your production credentials.
+# NEVER commit `key.properties` or your `.jks` file to version control.
+
+storePassword=your_keystore_password_here
+keyPassword=your_key_password_here
+keyAlias=w8k1_release_key
+storeFile=/path/to/your/upload-keystore.jks

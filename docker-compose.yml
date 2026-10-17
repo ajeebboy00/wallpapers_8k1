@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: w8k1_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-w8k1_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-w8k1_secure_password}
+      POSTGRES_DB: ${POSTGRES_DB:-wallpapers_8k1_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-w8k1_user} -d ${POSTGRES_DB:-wallpapers_8k1_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: w8k1_backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      - APP_ENV=development
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-w8k1_user}:${POSTGRES_PASSWORD:-w8k1_secure_password}@postgres:5432/${POSTGRES_DB:-wallpapers_8k1_db}
+      - SECRET_KEY=${SECRET_KEY:-default_insecure_key_change_me}
+      - JWT_SECRET=${JWT_SECRET:-default_jwt_key_change_me}
+      - STORAGE_PROVIDER=local
+      - STORAGE_LOCAL_DIR=/app/storage/uploads
+    volumes:
+      - ./backend:/app
+      - backend_uploads:/app/storage/uploads
+
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: w8k1_admin
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1
+    volumes:
+      - ./admin:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_uploads:
+    driver: local
