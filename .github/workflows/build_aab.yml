@@ -54,7 +54,18 @@ jobs:
         working-directory: ./mobile
         run: |
           set -o pipefail
-          flutter build appbundle --release --no-tree-shake-icons 2>&1 | tee ../build.log
+          {
+            echo "=== CURRENT WORKING DIRECTORY ==="
+            pwd
+            echo "=== DIRECTORY LISTING ==="
+            ls -la
+            echo "=== CHECKING LIB DIRECTORY ==="
+            ls -la lib/ || true
+            echo "=== CHECKING MAIN.DART ==="
+            ls -la lib/main.dart || true
+            echo "=== EXECUTING FLUTTER BUILD APPBUNDLE ==="
+            flutter build appbundle --release --no-tree-shake-icons -t "$PWD/lib/main.dart" -v
+          } 2>&1 | tee ../build.log
 
       - name: Upload Build Log on Failure
         if: failure()
