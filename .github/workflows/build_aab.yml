@@ -53,19 +53,7 @@ jobs:
       - name: Build Android App Bundle (.aab)
         working-directory: ./mobile
         run: |
-          set -o pipefail
-          {
-            echo "=== CURRENT WORKING DIRECTORY ==="
-            pwd
-            echo "=== DIRECTORY LISTING ==="
-            ls -la
-            echo "=== CHECKING LIB DIRECTORY ==="
-            ls -la lib/ || true
-            echo "=== CHECKING MAIN.DART ==="
-            ls -la lib/main.dart || true
-            echo "=== EXECUTING FLUTTER BUILD APPBUNDLE ==="
-            flutter build appbundle --release --no-tree-shake-icons -t "$PWD/lib/main.dart" -v
-          } 2>&1 | tee ../build.log
+          flutter build appbundle --release --no-tree-shake-icons -t "$PWD/lib/main.dart" -v > ../build.log 2>&1 || (cat ../build.log | tail -n 150 && exit 1)
 
       - name: Upload Build Log on Failure
         if: failure()
