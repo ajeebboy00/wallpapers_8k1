@@ -34,9 +34,6 @@ dependencies:
   share_plus: ^7.2.2
   url_launcher: ^6.2.5
 
-  # Android Wallpaper Setting Plugin / Method Channel
-  async_wallpaper: ^2.1.0
-
   # Navigation & UI Polish
   go_router: ^13.2.0
   google_fonts: ^6.1.0
