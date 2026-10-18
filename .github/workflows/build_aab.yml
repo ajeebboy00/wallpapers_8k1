@@ -29,8 +29,9 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Accept Android Licenses
+      - name: Accept Android Licenses & Precache
         run: |
+          flutter precache --android
           yes | flutter doctor --android-licenses || true
 
       - name: Verify Environment
@@ -49,7 +50,18 @@ jobs:
       - name: Build Android App Bundle (.aab)
         working-directory: ./mobile
         run: |
-          flutter build appbundle --release --no-tree-shake-icons -v > ../build.log 2>&1 || (tail -n 150 ../build.log && exit 1)
+          set -o pipefail
+          flutter build appbundle --release --no-tree-shake-icons 2>&1 | tee ../build.log
+
+      - name: Generate Step Summary
+        if: always()
+        run: |
+          echo "### Build Execution Summary" >> $GITHUB_STEP_SUMMARY
+          if [ -f build.log ]; then
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            tail -n 60 build.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Upload Build Log on Failure
         if: failure()

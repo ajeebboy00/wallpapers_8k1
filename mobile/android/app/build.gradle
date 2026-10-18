@@ -16,6 +16,14 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0.0'
 }
 
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    flutterRoot = System.getenv('FLUTTER_ROOT')
+}
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file or set FLUTTER_ROOT.")
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -28,7 +36,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.wallpapers8k1.app"
-    compileSdkVersion 36
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -47,7 +55,7 @@ android {
     defaultConfig {
         applicationId "com.wallpapers8k1.app"
         minSdkVersion 24
-        targetSdkVersion 36
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
