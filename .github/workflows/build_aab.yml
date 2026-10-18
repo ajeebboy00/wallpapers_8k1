@@ -8,6 +8,9 @@ on:
       - 'mobile/**'
       - '.github/workflows/build_aab.yml'
 
+permissions:
+  contents: write
+
 jobs:
   build-aab:
     name: Build Android App Bundle (.aab)
@@ -53,22 +56,22 @@ jobs:
           set -o pipefail
           flutter build appbundle --release --no-tree-shake-icons 2>&1 | tee ../build.log
 
-      - name: Generate Step Summary
-        if: always()
-        run: |
-          echo "### Build Execution Summary" >> $GITHUB_STEP_SUMMARY
-          if [ -f build.log ]; then
-            echo '```text' >> $GITHUB_STEP_SUMMARY
-            tail -n 60 build.log >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          fi
-
       - name: Upload Build Log on Failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: build-failure-log
           path: build.log
+
+      - name: Push Build Log Branch on Failure
+        if: failure()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B build-logs
+          git add -f build.log
+          git commit -m "ci: capture build.log on failure" || true
+          git push -f origin build-logs || true
 
       - name: Upload Play Store AAB Artifact
         if: success()
