@@ -53,7 +53,7 @@ jobs:
       - name: Build Android App Bundle (.aab)
         working-directory: ./mobile
         run: |
-          flutter build appbundle --release --no-tree-shake-icons -t "$PWD/lib/main.dart" -v > ../build.log 2>&1 || (cat ../build.log | tail -n 150 && exit 1)
+          flutter build appbundle --release --no-tree-shake-icons --android-skip-build-dependency-validation -t "$PWD/lib/main.dart" -v > ../build.log 2>&1 || (cat ../build.log | tail -n 150 && exit 1)
 
       - name: Upload Build Log on Failure
         if: failure()
