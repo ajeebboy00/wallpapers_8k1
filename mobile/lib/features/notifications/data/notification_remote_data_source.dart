@@ -1,5 +1,5 @@
-import '../../../../core/network/api_client.dart';
-import '../../../../shared/models/notification_model.dart';
+import 'package:wallpapers_8k1/core/network/api_client.dart';
+import 'package:wallpapers_8k1/shared/models/notification_model.dart';
 
 abstract class INotificationRemoteDataSource {
   Future<void> registerDeviceToken({

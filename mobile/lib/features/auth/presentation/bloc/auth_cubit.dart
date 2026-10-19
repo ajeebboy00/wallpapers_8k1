@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../shared/models/user_model.dart';
+import 'package:wallpapers_8k1/shared/models/user_model.dart';
 import '../../data/auth_repository.dart';
 import 'auth_state.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import 'package:wallpapers_8k1/core/theme/app_colors.dart';
 import '../../domain/search_filter.dart';
 
 class SearchFilterModal extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/models/wallpaper_model.dart';
-import '../../../../shared/widgets/wallpaper_card.dart';
+import 'package:wallpapers_8k1/core/theme/app_colors.dart';
+import 'package:wallpapers_8k1/shared/models/wallpaper_model.dart';
+import 'package:wallpapers_8k1/shared/widgets/wallpaper_card.dart';
 
 class WallpaperInfoSheet extends StatelessWidget {
   final WallpaperModel wallpaper;

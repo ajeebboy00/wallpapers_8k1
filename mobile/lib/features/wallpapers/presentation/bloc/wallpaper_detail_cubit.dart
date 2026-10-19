@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/services/wallpaper_setter_service.dart';
+import 'package:wallpapers_8k1/core/services/wallpaper_setter_service.dart';
 import '../../data/wallpaper_detail_repository.dart';
 import 'wallpaper_detail_state.dart';
 

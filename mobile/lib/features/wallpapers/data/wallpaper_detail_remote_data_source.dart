@@ -1,5 +1,5 @@
-import '../../../../core/network/api_client.dart';
-import '../../../../shared/models/wallpaper_model.dart';
+import 'package:wallpapers_8k1/core/network/api_client.dart';
+import 'package:wallpapers_8k1/shared/models/wallpaper_model.dart';
 
 class WallpaperDetailRemoteDataSource {
   final ApiClient _apiClient;

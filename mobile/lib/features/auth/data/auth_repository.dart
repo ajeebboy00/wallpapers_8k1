@@ -1,5 +1,5 @@
-import '../../../../core/storage/secure_storage_service.dart';
-import '../../../../shared/models/user_model.dart';
+import 'package:wallpapers_8k1/core/storage/secure_storage_service.dart';
+import 'package:wallpapers_8k1/shared/models/user_model.dart';
 import 'auth_remote_data_source.dart';
 
 abstract class IAuthRepository {

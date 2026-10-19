@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/network/api_client.dart';
-import '../../../../core/services/download_service.dart';
-import '../../../../core/services/wallpaper_setter_service.dart';
-import '../../../../core/storage/secure_storage_service.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/widgets/state_views.dart';
+import 'package:wallpapers_8k1/core/network/api_client.dart';
+import 'package:wallpapers_8k1/core/services/download_service.dart';
+import 'package:wallpapers_8k1/core/services/wallpaper_setter_service.dart';
+import 'package:wallpapers_8k1/core/storage/secure_storage_service.dart';
+import 'package:wallpapers_8k1/core/theme/app_colors.dart';
+import 'package:wallpapers_8k1/shared/widgets/state_views.dart';
 import '../data/wallpaper_detail_remote_data_source.dart';
 import '../data/wallpaper_detail_repository.dart';
 import 'bloc/wallpaper_detail_cubit.dart';

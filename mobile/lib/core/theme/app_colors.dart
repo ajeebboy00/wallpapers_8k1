@@ -34,4 +34,14 @@ class AppColors {
   static const Color warning = Color(0xFFF59E0B);
   static const Color error = Color(0xFFEF4444);
   static const Color favorite = Color(0xFFFF3366);
+
+  // Convenience Aliases (AMOLED Dark)
+  static const Color background = darkBackground;
+  static const Color surface = darkSurface;
+  static const Color surfaceElevated = darkSurfaceElevated;
+  static const Color border = darkBorder;
+  static const Color divider = darkBorder;
+  static const Color textPrimary = textDarkPrimary;
+  static const Color textSecondary = textDarkSecondary;
+  static const Color textTertiary = textDarkMuted;
 }

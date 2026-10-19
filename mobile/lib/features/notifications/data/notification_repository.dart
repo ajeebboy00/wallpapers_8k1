@@ -1,4 +1,4 @@
-import '../../../../shared/models/notification_model.dart';
+import 'package:wallpapers_8k1/shared/models/notification_model.dart';
 import 'notification_remote_data_source.dart';
 
 abstract class INotificationRepository {

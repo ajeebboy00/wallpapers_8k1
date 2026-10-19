@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../../../../shared/models/wallpaper_model.dart';
-import '../../../../shared/widgets/shimmer_placeholder.dart';
+import 'package:wallpapers_8k1/shared/models/wallpaper_model.dart';
+import 'package:wallpapers_8k1/shared/widgets/shimmer_placeholder.dart';
 
 class FullscreenImageViewer extends StatefulWidget {
   final WallpaperModel wallpaper;
@@ -104,7 +104,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer>
                     fit: BoxFit.contain,
                   );
                 }
-                return const Center(child: ShimmerPlaceholder(width: double.infinity, height: double.infinity));
+                return Center(child: ShimmerPlaceholder(width: double.infinity, height: double.infinity));
               },
               errorWidget: (context, url, error) => const Center(
                 child: Column(

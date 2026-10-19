@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import '../../../../core/constants/app_constants.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/theme_cubit.dart';
+import 'package:wallpapers_8k1/core/constants/app_constants.dart';
+import 'package:wallpapers_8k1/core/theme/app_colors.dart';
+import 'package:wallpapers_8k1/core/theme/theme_cubit.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

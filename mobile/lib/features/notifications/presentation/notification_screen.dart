@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/network/api_client.dart';
-import '../../../../core/storage/secure_storage_service.dart';
-import '../../../../core/theme/app_colors.dart';
+import 'package:wallpapers_8k1/core/network/api_client.dart';
+import 'package:wallpapers_8k1/core/storage/secure_storage_service.dart';
+import 'package:wallpapers_8k1/core/theme/app_colors.dart';
 import '../data/notification_remote_data_source.dart';
 import '../data/notification_repository.dart';
 import 'bloc/notification_cubit.dart';

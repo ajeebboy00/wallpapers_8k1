@@ -32,6 +32,8 @@ class ThemeCubit extends Cubit<ThemeMode> {
     }
   }
 
+  Future<void> setThemeMode(ThemeMode mode) => setTheme(mode);
+
   Future<void> toggleTheme() async {
     if (state == ThemeMode.dark) {
       await setTheme(ThemeMode.light);

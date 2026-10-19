@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../../shared/models/wallpaper_model.dart';
+import 'package:wallpapers_8k1/shared/models/wallpaper_model.dart';
 
 abstract class WallpaperDetailState extends Equatable {
   const WallpaperDetailState();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../shared/widgets/shimmer_loader.dart';
+import 'package:wallpapers_8k1/core/theme/app_spacing.dart';
+import 'package:wallpapers_8k1/shared/widgets/shimmer_loader.dart';
 
 class HomeShimmerView extends StatelessWidget {
   const HomeShimmerView({super.key});

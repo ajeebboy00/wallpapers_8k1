@@ -1,5 +1,5 @@
-import '../../../../core/network/api_client.dart';
-import '../../../../shared/models/user_model.dart';
+import 'package:wallpapers_8k1/core/network/api_client.dart';
+import 'package:wallpapers_8k1/shared/models/user_model.dart';
 
 class AuthSessionBundle {
   final String accessToken;

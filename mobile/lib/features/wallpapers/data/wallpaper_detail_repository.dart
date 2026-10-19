@@ -1,7 +1,7 @@
 import 'package:share_plus/share_plus.dart';
-import '../../../../core/services/download_service.dart';
-import '../../../../core/services/wallpaper_setter_service.dart';
-import '../../../../shared/models/wallpaper_model.dart';
+import 'package:wallpapers_8k1/core/services/download_service.dart';
+import 'package:wallpapers_8k1/core/services/wallpaper_setter_service.dart';
+import 'package:wallpapers_8k1/shared/models/wallpaper_model.dart';
 import 'wallpaper_detail_remote_data_source.dart';
 
 class WallpaperDetailBundle {

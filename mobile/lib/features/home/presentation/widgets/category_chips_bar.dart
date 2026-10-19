@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/models/category_model.dart';
+import 'package:wallpapers_8k1/core/theme/app_colors.dart';
+import 'package:wallpapers_8k1/shared/models/category_model.dart';
 
 class CategoryChipsBar extends StatelessWidget {
   final List<CategoryModel> categories;

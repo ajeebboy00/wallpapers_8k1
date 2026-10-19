@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/shimmer_placeholder.dart';
+import 'package:wallpapers_8k1/shared/widgets/shimmer_placeholder.dart';
 
 class SearchShimmerView extends StatelessWidget {
   const SearchShimmerView({super.key});

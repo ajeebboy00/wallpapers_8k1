@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../../shared/models/notification_model.dart';
+import 'package:wallpapers_8k1/shared/models/notification_model.dart';
 
 enum NotificationStatus { initial, loading, success, failure }
 

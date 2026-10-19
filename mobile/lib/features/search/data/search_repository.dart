@@ -1,6 +1,6 @@
 import 'dart:convert';
-import '../../../../core/constants/app_constants.dart';
-import '../../../../core/storage/secure_storage_service.dart';
+import 'package:wallpapers_8k1/core/constants/app_constants.dart';
+import 'package:wallpapers_8k1/core/storage/secure_storage_service.dart';
 import '../domain/search_filter.dart';
 import 'search_remote_data_source.dart';
 

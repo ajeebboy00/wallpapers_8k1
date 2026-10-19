@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/services/wallpaper_setter_service.dart';
-import '../../../../core/theme/app_colors.dart';
+import 'package:wallpapers_8k1/core/services/wallpaper_setter_service.dart';
+import 'package:wallpapers_8k1/core/theme/app_colors.dart';
 
 class WallpaperSetDialog extends StatelessWidget {
   const WallpaperSetDialog({super.key});
