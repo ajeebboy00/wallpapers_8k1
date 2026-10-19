@@ -76,13 +76,19 @@ class EmptyView extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
+  final VoidCallback? onAction;
+  final String? actionLabel;
 
   const EmptyView({
     super.key,
-    required this.title,
-    required this.subtitle,
+    String? title,
+    String? subtitle,
+    String? message,
     this.icon = Icons.inbox_rounded,
-  });
+    this.onAction,
+    this.actionLabel,
+  })  : title = title ?? (message != null ? 'No Items Found' : 'No Items'),
+        subtitle = subtitle ?? message ?? '';
 
   @override
   Widget build(BuildContext context) {
@@ -99,12 +105,26 @@ class EmptyView extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: const TextStyle(fontSize: 13, color: AppColors.textDarkMuted),
-              textAlign: TextAlign.center,
-            ),
+            if (subtitle.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                subtitle,
+                style: const TextStyle(fontSize: 13, color: AppColors.textDarkMuted),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            if (onAction != null && actionLabel != null) ...[
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: onAction,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: Text(actionLabel!),
+              ),
+            ],
           ],
         ),
       ),
