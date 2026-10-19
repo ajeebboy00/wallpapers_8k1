@@ -43,3 +43,7 @@
 # Security & SharedPreferences / Biometrics
 -keep class androidx.security.crypto.** { *; }
 -dontwarn androidx.security.crypto.**
+
+# Google Play Core & Flutter Deferred Components
+-dontwarn com.google.android.play.core.**
+
