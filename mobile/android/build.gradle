@@ -12,7 +12,6 @@ subprojects {
     project.layout.buildDirectory.set(newBuildDir.dir(project.name))
 }
 subprojects {
-    project.evaluationDependsOn(':app')
     afterEvaluate { project ->
         if (project.hasProperty('android')) {
             project.android {
@@ -24,6 +23,10 @@ subprojects {
             }
         }
     }
+}
+
+subprojects {
+    project.evaluationDependsOn(':app')
 }
 
 tasks.register("clean", Delete) {
