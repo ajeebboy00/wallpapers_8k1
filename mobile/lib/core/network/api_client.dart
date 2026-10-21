@@ -37,6 +37,8 @@ class ApiClient {
           compact: true,
         ),
       );
+    }
+
     AppConfig.baseUrlNotifier.addListener(() {
       dio.options.baseUrl = AppConfig.baseUrlNotifier.value;
     });
