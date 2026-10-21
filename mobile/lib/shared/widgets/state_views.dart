@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import 'server_config_dialog.dart';
 
 class LoadingView extends StatelessWidget {
   final String? message;
@@ -63,6 +64,14 @@ class ErrorView extends StatelessWidget {
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh_rounded, size: 18),
                 label: const Text('Try Again'),
+              ),
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                onPressed: () {
+                  showServerConfigDialog(context, onSaved: onRetry);
+                },
+                icon: const Icon(Icons.wifi_tethering_rounded, size: 18),
+                label: const Text('Change Server IP'),
               ),
             ],
           ],

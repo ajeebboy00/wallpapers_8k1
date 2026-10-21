@@ -6,6 +6,7 @@ import 'package:wallpapers_8k1/core/constants/app_constants.dart';
 import 'package:wallpapers_8k1/core/network/api_client.dart';
 import 'package:wallpapers_8k1/core/storage/secure_storage_service.dart';
 import 'package:wallpapers_8k1/core/theme/app_colors.dart';
+import 'package:wallpapers_8k1/shared/widgets/server_config_dialog.dart';
 import 'package:wallpapers_8k1/shared/widgets/state_views.dart';
 import 'package:wallpapers_8k1/shared/widgets/wallpaper_card.dart';
 import 'package:wallpapers_8k1/features/home/data/home_remote_data_source.dart';
@@ -79,6 +80,14 @@ class _HomeScreenContent extends StatelessWidget {
             icon: const Icon(Icons.notifications_none_rounded),
             tooltip: 'Notifications',
             onPressed: () => context.push('/notifications'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.wifi_tethering_rounded),
+            tooltip: 'Server IP',
+            onPressed: () => showServerConfigDialog(
+              context,
+              onSaved: () => context.read<HomeCubit>().loadHomeFeed(),
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.favorite_outline_rounded),

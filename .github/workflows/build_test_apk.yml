@@ -51,7 +51,7 @@ jobs:
       - name: Build Android Release APK for Wi-Fi Testing
         working-directory: ./mobile
         run: |
-          flutter build apk --release --no-tree-shake-icons --android-skip-build-dependency-validation -t "$PWD/lib/main.dart" --dart-define=APP_ENV=development --dart-define=API_BASE_URL="http://192.168.1.10:8000/api/v1" -v > ../build.log 2>&1 || {
+          flutter build apk --release --no-tree-shake-icons --android-skip-build-dependency-validation -t "$PWD/lib/main.dart" --dart-define=APP_ENV=development --dart-define=API_BASE_URL="http://10.72.10.121:8000/api/v1" -v > ../build.log 2>&1 || {
             echo "Checking for generated .apk files across workspace..."
             find . -name "*.apk" -ls || true
             if ls android/build/app/outputs/flutter-apk/*.apk 1> /dev/null 2>&1; then

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 enum Environment { development, staging, production }
 
 class AppConfig {
@@ -12,6 +14,7 @@ class AppConfig {
   });
 
   static late AppConfig current;
+  static final ValueNotifier<String> baseUrlNotifier = ValueNotifier<String>('');
 
   static void initialize({
     required Environment environment,
@@ -23,5 +26,15 @@ class AppConfig {
       apiBaseUrl: apiBaseUrl,
       enableLogging: enableLogging,
     );
+    baseUrlNotifier.value = apiBaseUrl;
+  }
+
+  static void updateApiBaseUrl(String newUrl) {
+    current = AppConfig(
+      environment: current.environment,
+      apiBaseUrl: newUrl,
+      enableLogging: current.enableLogging,
+    );
+    baseUrlNotifier.value = newUrl;
   }
 }

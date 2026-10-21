@@ -11,28 +11,33 @@ import 'core/theme/theme_cubit.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1. Initialize environment settings with --dart-define support
-  const envString = String.fromEnvironment('APP_ENV', defaultValue: 'development');
-  const customBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: '');
-  final isProd = envString.toLowerCase() == 'production';
-  final env = isProd ? Environment.production : Environment.development;
-  final baseUrl = customBaseUrl.isNotEmpty
-      ? customBaseUrl
-      : (isProd ? 'https://api.wallpapers8k1.com/api/v1' : AppConstants.defaultBaseUrl);
-
-  AppConfig.initialize(
-    environment: env,
-    apiBaseUrl: baseUrl,
-    enableLogging: !isProd,
-  );
-
-  // 2. Initialize local preferences safely
+  // 1. Initialize local preferences safely
   SharedPreferences? prefs;
   try {
     prefs = await SharedPreferences.getInstance();
   } catch (e) {
     debugPrint('Could not initialize SharedPreferences: $e');
   }
+
+  // 2. Initialize environment settings with --dart-define support
+  const envString = String.fromEnvironment('APP_ENV', defaultValue: 'development');
+  const customBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: '');
+  final isProd = envString.toLowerCase() == 'production';
+  final env = isProd ? Environment.production : Environment.development;
+
+  // Priority: 1. Saved in-app IP, 2. Dart-define IP, 3. Production or current hotspot default
+  final savedBaseUrl = prefs?.getString('custom_api_base_url');
+  final baseUrl = (savedBaseUrl != null && savedBaseUrl.isNotEmpty)
+      ? savedBaseUrl
+      : (customBaseUrl.isNotEmpty
+          ? customBaseUrl
+          : (isProd ? 'https://api.wallpapers8k1.com/api/v1' : 'http://10.72.10.121:8000/api/v1'));
+
+  AppConfig.initialize(
+    environment: env,
+    apiBaseUrl: baseUrl,
+    enableLogging: !isProd,
+  );
 
   runApp(
     MultiBlocProvider(

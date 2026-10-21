@@ -32,13 +32,16 @@ class CollectionService:
         is_published: Optional[bool] = True
     ) -> PaginatedResponse[CollectionResponse]:
         """Lists collections with pagination and wallpaper counts."""
-        offset = (page - 1) * limit
-        items, total = await self.repo.list_collections(
-            offset=offset,
-            limit=limit,
-            is_featured=is_featured,
-            is_published=is_published
-        )
+        try:
+            items, total = await self.repo.list_collections(
+                offset=offset,
+                limit=limit,
+                is_featured=is_featured,
+                is_published=is_published
+            )
+        except Exception as exc:
+            logger.warning(f"Database unavailable for list_collections: {exc}. Using empty fallback.")
+            items, total = [], 0
 
         total_pages = math.ceil(total / limit) if total > 0 else 1
         meta = PaginationMeta(

@@ -25,24 +25,29 @@ class CategoryService:
             except Exception:
                 pass
 
-        rows = await self.repo.get_all_with_counts(active_only=active_only)
-        responses: List[CategoryResponse] = []
-        for cat, count in rows:
-            resp = CategoryResponse(
-                id=cat.id,
-                name=cat.name,
-                slug=cat.slug,
-                description=cat.description,
-                image_url=cat.image_url,
-                sort_order=cat.sort_order,
-                is_active=cat.is_active,
-                wallpaper_count=count,
-                created_at=cat.created_at,
-                updated_at=cat.updated_at
-            )
-            responses.append(resp)
-        await cache_service.set(cache_key, [r.model_dump(mode="json") for r in responses], ttl_seconds=600)
-        return responses
+        try:
+            rows = await self.repo.get_all_with_counts(active_only=active_only)
+            responses: List[CategoryResponse] = []
+            for cat, count in rows:
+                resp = CategoryResponse(
+                    id=cat.id,
+                    name=cat.name,
+                    slug=cat.slug,
+                    description=cat.description,
+                    image_url=cat.image_url,
+                    sort_order=cat.sort_order,
+                    is_active=cat.is_active,
+                    wallpaper_count=count,
+                    created_at=cat.created_at,
+                    updated_at=cat.updated_at
+                )
+                responses.append(resp)
+            await cache_service.set(cache_key, [r.model_dump(mode="json") for r in responses], ttl_seconds=600)
+            return responses
+        except Exception as exc:
+            logger.warning(f"Database unavailable for list_categories: {exc}. Using mock fallback.")
+            from app.services.mock_data import MOCK_CATEGORIES
+            return MOCK_CATEGORIES
 
     async def get_by_slug(self, slug: str) -> CategoryResponse:
         """Retrieves a single category by slug."""

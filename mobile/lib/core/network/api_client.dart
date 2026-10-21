@@ -37,7 +37,14 @@ class ApiClient {
           compact: true,
         ),
       );
-    }
+    AppConfig.baseUrlNotifier.addListener(() {
+      dio.options.baseUrl = AppConfig.baseUrlNotifier.value;
+    });
+  }
+
+  void updateBaseUrl(String newUrl) {
+    AppConfig.updateApiBaseUrl(newUrl);
+    dio.options.baseUrl = newUrl;
   }
 
   AppException _handleDioError(DioException error) {
