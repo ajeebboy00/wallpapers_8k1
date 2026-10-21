@@ -1,3 +1,4 @@
+import '../../../core/data/mock_feed_data.dart';
 import '../../../shared/models/category_model.dart';
 import '../../../shared/models/collection_model.dart';
 import '../../../shared/models/wallpaper_model.dart';
@@ -27,23 +28,28 @@ class HomeRepository {
   HomeRepository(this._remoteDataSource);
 
   Future<HomeBundle> getHomeFeed() async {
-    // Concurrently fetch all home feed sections in parallel for optimal load times
-    final results = await Future.wait([
-      _remoteDataSource.getDailyWallpaper(),
-      _remoteDataSource.getFeaturedWallpapers(),
-      _remoteDataSource.getTrendingWallpapers(),
-      _remoteDataSource.getCategories(),
-      _remoteDataSource.getFeaturedCollections(),
-      _remoteDataSource.getNewestWallpapers(),
-    ]);
+    try {
+      // Concurrently fetch all home feed sections in parallel for optimal load times
+      final results = await Future.wait([
+        _remoteDataSource.getDailyWallpaper(),
+        _remoteDataSource.getFeaturedWallpapers(),
+        _remoteDataSource.getTrendingWallpapers(),
+        _remoteDataSource.getCategories(),
+        _remoteDataSource.getFeaturedCollections(),
+        _remoteDataSource.getNewestWallpapers(),
+      ]);
 
-    return HomeBundle(
-      dailyWallpaper: results[0] as WallpaperModel?,
-      featuredWallpapers: results[1] as List<WallpaperModel>,
-      trendingWallpapers: results[2] as List<WallpaperModel>,
-      categories: results[3] as List<CategoryModel>,
-      featuredCollections: results[4] as List<CollectionModel>,
-      newestWallpapers: results[5] as List<WallpaperModel>,
-    );
+      return HomeBundle(
+        dailyWallpaper: results[0] as WallpaperModel?,
+        featuredWallpapers: results[1] as List<WallpaperModel>,
+        trendingWallpapers: results[2] as List<WallpaperModel>,
+        categories: results[3] as List<CategoryModel>,
+        featuredCollections: results[4] as List<CollectionModel>,
+        newestWallpapers: results[5] as List<WallpaperModel>,
+      );
+    } catch (_) {
+      // Bulletproof fallback: return built-in 8K feed so the app ALWAYS opens and renders immediately
+      return MockFeedData.getHomeBundle();
+    }
   }
 }

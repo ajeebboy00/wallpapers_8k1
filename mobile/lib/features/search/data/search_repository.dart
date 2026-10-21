@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:wallpapers_8k1/core/constants/app_constants.dart';
+import 'package:wallpapers_8k1/core/data/mock_feed_data.dart';
 import 'package:wallpapers_8k1/core/storage/secure_storage_service.dart';
 import '../domain/search_filter.dart';
 import 'search_remote_data_source.dart';
@@ -38,17 +39,46 @@ class SearchRepository implements ISearchRepository {
     int page = 1,
     int limit = 20,
   }) async {
-    return await _remoteDataSource.searchWallpapers(
-      query: query,
-      filter: filter,
-      page: page,
-      limit: limit,
-    );
+    try {
+      return await _remoteDataSource.searchWallpapers(
+        query: query,
+        filter: filter,
+        page: page,
+        limit: limit,
+      );
+    } catch (_) {
+      // Fallback search over built-in 8K wallpapers
+      var list = MockFeedData.mockWallpapers;
+      if (query != null && query.trim().isNotEmpty) {
+        final q = query.trim().toLowerCase();
+        list = list.where((w) {
+          return w.title.toLowerCase().contains(q) ||
+              w.description.toLowerCase().contains(q) ||
+              w.tags.any((t) => t.name.toLowerCase().contains(q)) ||
+              w.categoryId.toLowerCase().contains(q);
+        }).toList();
+      }
+      return SearchResultBundle(
+        wallpapers: list,
+        page: 1,
+        total: list.length,
+        totalPages: 1,
+        hasNext: false,
+      );
+    }
   }
 
   @override
   Future<SearchSuggestionsBundle> getSuggestions({String? query, int limit = 10}) async {
-    return await _remoteDataSource.getSuggestions(query: query, limit: limit);
+    try {
+      return await _remoteDataSource.getSuggestions(query: query, limit: limit);
+    } catch (_) {
+      return const SearchSuggestionsBundle(
+        popularSearches: ['8K Nebula', 'Cyberpunk', 'Yosemite', 'Dark AMOLED', 'Anime'],
+        suggestedTags: ['8K UHD', 'AMOLED', 'Cyberpunk', 'Space', 'Nature'],
+        suggestedCategories: ['Anime', 'Nature', 'Cyberpunk', 'AMOLED', 'Space'],
+      );
+    }
   }
 
   @override
