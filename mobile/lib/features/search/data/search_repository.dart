@@ -53,7 +53,7 @@ class SearchRepository implements ISearchRepository {
         final q = query.trim().toLowerCase();
         list = list.where((w) {
           return w.title.toLowerCase().contains(q) ||
-              w.description.toLowerCase().contains(q) ||
+              (w.description?.toLowerCase().contains(q) ?? false) ||
               w.tags.any((t) => t.name.toLowerCase().contains(q)) ||
               w.categoryId.toLowerCase().contains(q);
         }).toList();
