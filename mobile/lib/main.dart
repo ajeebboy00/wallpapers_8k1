@@ -26,8 +26,13 @@ void main() async {
     enableLogging: !isProd,
   );
 
-  // 2. Initialize local preferences
-  final prefs = await SharedPreferences.getInstance();
+  // 2. Initialize local preferences safely
+  SharedPreferences? prefs;
+  try {
+    prefs = await SharedPreferences.getInstance();
+  } catch (e) {
+    debugPrint('Could not initialize SharedPreferences: $e');
+  }
 
   runApp(
     MultiBlocProvider(
