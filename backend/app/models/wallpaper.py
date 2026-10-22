@@ -7,6 +7,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    JSON,
     String,
     Text,
     Uuid,
@@ -84,9 +85,15 @@ class Wallpaper(Base, TimestampMixin):
 
     # AI Discovery, Visual Search & Similarity (Stage 15)
     dominant_color: Mapped[Optional[str]] = mapped_column(String(7), index=True, nullable=True)
-    color_palette: Mapped[Optional[List[str]]] = mapped_column(JSONB, nullable=True)
+    color_palette: Mapped[Optional[List[str]]] = mapped_column(
+        JSON().with_variant(JSONB, "postgresql"),
+        nullable=True
+    )
     perceptual_hash: Mapped[Optional[str]] = mapped_column(String(64), index=True, nullable=True)
-    ai_tags: Mapped[Optional[List[str]]] = mapped_column(JSONB, nullable=True)
+    ai_tags: Mapped[Optional[List[str]]] = mapped_column(
+        JSON().with_variant(JSONB, "postgresql"),
+        nullable=True
+    )
     ai_description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     is_ai_generated: Mapped[bool] = mapped_column(Boolean, default=False, index=True, nullable=False)
 

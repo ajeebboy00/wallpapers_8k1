@@ -74,6 +74,9 @@ mobile/android/key.properties
 # Storage / Uploads
 backend/storage/uploads/*
 !backend/storage/uploads/.gitkeep
+*.db
+*.sqlite
+*.sqlite3
 
 # IDEs
 .idea/

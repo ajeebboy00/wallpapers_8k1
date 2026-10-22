@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../core/config/app_config.dart';
 import 'category_model.dart';
 import 'tag_model.dart';
 
@@ -85,10 +86,10 @@ class WallpaperModel extends Equatable {
       title: json['title'] as String? ?? '',
       slug: json['slug'] as String? ?? '',
       description: json['description'] as String?,
-      originalUrl: json['original_url'] as String? ?? '',
-      imageUrl: json['image_url'] as String? ?? '',
-      thumbnailUrl: json['thumbnail_url'] as String? ?? '',
-      previewUrl: json['preview_url'] as String? ?? '',
+      originalUrl: _normalizeUrl(json['original_url'] as String?),
+      imageUrl: _normalizeUrl(json['image_url'] as String?),
+      thumbnailUrl: _normalizeUrl(json['thumbnail_url'] as String?),
+      previewUrl: _normalizeUrl(json['preview_url'] as String?),
       width: (json['width'] as num?)?.toInt() ?? 0,
       height: (json['height'] as num?)?.toInt() ?? 0,
       aspectRatio: (json['aspect_ratio'] as num?)?.toDouble() ?? 1.0,
@@ -280,4 +281,22 @@ class WallpaperModel extends Equatable {
         aiTags,
         aiDescription,
       ];
+
+  static String _normalizeUrl(String? raw) {
+    if (raw == null || raw.isEmpty) return '';
+    try {
+      final uri = Uri.parse(raw);
+      if (uri.path.contains('/storage/uploads/')) {
+        final base = Uri.tryParse(AppConfig.current.apiBaseUrl);
+        if (base != null && base.host.isNotEmpty) {
+          return uri.replace(
+            scheme: base.scheme,
+            host: base.host,
+            port: base.hasPort ? base.port : null,
+          ).toString();
+        }
+      }
+    } catch (_) {}
+    return raw;
+  }
 }

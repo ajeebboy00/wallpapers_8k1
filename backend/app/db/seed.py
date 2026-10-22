@@ -6,20 +6,24 @@ from app.core.config import settings
 from app.core.constants import UserRole
 from app.core.logging import logger
 from app.core.security import get_password_hash
-from app.db.session import AsyncSessionLocal
+from app.db.base import Base
+from app.db.session import AsyncSessionLocal, engine
 from app.models import AppSetting, Category, NotificationPreference, User
 
 INITIAL_CATEGORIES = [
-    {"name": "Black & Dark", "slug": "black-dark", "sort_order": 1, "description": "Ultra dark AMOLED wallpapers with deep blacks and high contrast."},
-    {"name": "Nature", "slug": "nature", "sort_order": 2, "description": "Stunning landscapes, forests, rivers, and breathtaking wilderness in 8K."},
-    {"name": "Cars", "slug": "cars", "sort_order": 3, "description": "Supercars, hypercars, classic automobiles, and motorsport aesthetics."},
-    {"name": "Gaming", "slug": "gaming", "sort_order": 4, "description": "Iconic gaming environments, character art, and console/PC gaming visuals."},
-    {"name": "Technology", "slug": "technology", "sort_order": 5, "description": "Futuristic tech, cyber aesthetics, microchips, and hardware design."},
-    {"name": "Space", "slug": "space", "sort_order": 6, "description": "Deep space nebulae, galaxies, stars, exoplanets, and cosmos imagery."},
-    {"name": "Mountains", "slug": "mountains", "sort_order": 7, "description": "Towering peaks, alpine vistas, snowy ranges, and mountain valleys."},
-    {"name": "Ocean", "slug": "ocean", "sort_order": 8, "description": "Deep blue seas, crashing waves, coral reefs, and coastal waters."},
-    {"name": "Minimal", "slug": "minimal", "sort_order": 9, "description": "Clean lines, subtle geometric shapes, and uncluttered negative space."},
-    {"name": "Abstract", "slug": "abstract", "sort_order": 10, "description": "Fluid 3D art, vibrant color blends, and surreal creative concepts."},
+    {"name": "Nature", "slug": "nature", "sort_order": 1, "description": "Stunning landscapes, forests, rivers, and breathtaking wilderness in 8K."},
+    {"name": "AMOLED / Black", "slug": "amoled-black", "sort_order": 2, "description": "Ultra dark AMOLED wallpapers with deep blacks and high contrast."},
+    {"name": "Abstract", "slug": "abstract", "sort_order": 3, "description": "Fluid 3D art, vibrant color blends, and surreal creative concepts."},
+    {"name": "Cars", "slug": "cars", "sort_order": 4, "description": "Supercars, hypercars, classic automobiles, and motorsport aesthetics."},
+    {"name": "Flowers", "slug": "flowers", "sort_order": 5, "description": "Delicate macro floral details, blooming petals, and botanical beauty."},
+    {"name": "Minimal", "slug": "minimal", "sort_order": 6, "description": "Clean lines, subtle geometric shapes, and uncluttered negative space."},
+    {"name": "Space", "slug": "space", "sort_order": 7, "description": "Deep space nebulae, galaxies, stars, exoplanets, and cosmos imagery."},
+    {"name": "Architecture", "slug": "architecture", "sort_order": 8, "description": "Modern structural marvels, minimalist facades, and historic architectural design."},
+    {"name": "Black & Dark", "slug": "black-dark", "sort_order": 9, "description": "Ultra dark AMOLED wallpapers with deep blacks and high contrast."},
+    {"name": "Gaming", "slug": "gaming", "sort_order": 10, "description": "Iconic gaming environments, character art, and console/PC gaming visuals."},
+    {"name": "Technology", "slug": "technology", "sort_order": 11, "description": "Futuristic tech, cyber aesthetics, microchips, and hardware design."},
+    {"name": "Mountains", "slug": "mountains", "sort_order": 12, "description": "Towering peaks, alpine vistas, snowy ranges, and mountain valleys."},
+    {"name": "Ocean", "slug": "ocean", "sort_order": 13, "description": "Deep blue seas, crashing waves, coral reefs, and coastal waters."},
 ]
 
 INITIAL_APP_SETTINGS = [
@@ -55,6 +59,10 @@ async def seed_development_data():
         return
 
     logger.info("==> Running development database seed...")
+
+    # Ensure all tables exist in development
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
     async with AsyncSessionLocal() as session:
         # 1. Seed Categories

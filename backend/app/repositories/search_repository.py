@@ -4,6 +4,7 @@ from sqlalchemy import case, distinct, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.core.config import settings
 from app.models.category import Category
 from app.models.tag import Tag, wallpaper_tags
 from app.models.wallpaper import Wallpaper
@@ -34,42 +35,43 @@ class SearchRepository:
         # 1. Advanced Full-Text & Trigram Fuzzy Matching
         if q_clean:
             q_pattern = f"%{q_clean}%"
+            is_pg = settings.DATABASE_URL.startswith("postgresql")
+
+            tag_conds = [Tag.name.ilike(q_pattern), Tag.slug.ilike(q_pattern)]
+            cat_conds = [Category.name.ilike(q_pattern), Category.slug.ilike(q_pattern)]
+            text_conds = [
+                Wallpaper.title.ilike(q_pattern),
+                Wallpaper.description.ilike(q_pattern),
+                Wallpaper.ai_description.ilike(q_pattern),
+            ]
+
+            if is_pg:
+                tag_conds.append(func.similarity(Tag.name, q_clean) > 0.3)
+                cat_conds.append(func.similarity(Category.name, q_clean) > 0.3)
+                text_conds.extend([
+                    func.similarity(Wallpaper.title, q_clean) > 0.2,
+                    func.similarity(func.coalesce(Wallpaper.description, ""), q_clean) > 0.2,
+                ])
 
             # Subquery matching tag names or slugs
             tag_subq = (
                 select(wallpaper_tags.c.wallpaper_id)
                 .join(Tag, Tag.id == wallpaper_tags.c.tag_id)
-                .where(
-                    or_(
-                        Tag.name.ilike(q_pattern),
-                        Tag.slug.ilike(q_pattern),
-                        func.similarity(Tag.name, q_clean) > 0.3
-                    )
-                )
+                .where(or_(*tag_conds))
             )
 
             # Subquery matching category names or slugs
             cat_subq = (
                 select(Category.id)
-                .where(
-                    or_(
-                        Category.name.ilike(q_pattern),
-                        Category.slug.ilike(q_pattern),
-                        func.similarity(Category.name, q_clean) > 0.3
-                    )
-                )
+                .where(or_(*cat_conds))
             )
 
-            text_condition = or_(
-                Wallpaper.title.ilike(q_pattern),
-                Wallpaper.description.ilike(q_pattern),
-                Wallpaper.ai_description.ilike(q_pattern),
-                func.similarity(Wallpaper.title, q_clean) > 0.2,
-                func.similarity(func.coalesce(Wallpaper.description, ""), q_clean) > 0.2,
+            text_conds.extend([
                 Wallpaper.id.in_(tag_subq),
                 Wallpaper.category_id.in_(cat_subq)
-            )
-            query = query.where(text_condition)
+            ])
+
+            query = query.where(or_(*text_conds))
 
         # 2. Category Filter (slug or UUID)
         if params.category:
@@ -135,14 +137,15 @@ class SearchRepository:
         # 10. Dynamic Sorting & Trigram Relevance Ranking
         if params.sort == "relevance" and q_clean:
             q_lower = q_clean.lower()
-            relevance_rank = case(
+            rank_cases = [
                 (func.lower(Wallpaper.title) == q_lower, 100),
                 (func.lower(Wallpaper.title).startswith(q_lower), 75),
                 (func.lower(Wallpaper.title).contains(q_lower), 50),
-                (func.similarity(Wallpaper.title, q_clean) > 0.4, 40),
-                (func.lower(Wallpaper.description).contains(q_lower), 25),
-                else_=10
-            )
+            ]
+            if is_pg:
+                rank_cases.append((func.similarity(Wallpaper.title, q_clean) > 0.4, 40))
+            rank_cases.append((func.lower(Wallpaper.description).contains(q_lower), 25))
+            relevance_rank = case(*rank_cases, else_=10)
             if params.order == "asc":
                 query = query.order_by(
                     relevance_rank.asc(),
